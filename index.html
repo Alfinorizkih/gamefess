@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>GameFess · popup tengah</title>
-    <!-- Font Awesome 6 (gratis) -->
+    <title>GameFess · cooldown blur</title>
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -14,14 +14,14 @@
         }
 
         body {
-            background: #f8fafd;
+            background: #f5f9ff;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
             padding: 24px 16px;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #1e2b3a;
+            color: #1a2634;
         }
 
         .phone {
@@ -32,6 +32,430 @@
             padding: 32px 24px 24px;
             box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.04);
             border: 1px solid #e9eff6;
+        }
+
+        /* header */
+        .header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a2634;
+            letter-spacing: -0.5px;
+            border-bottom: 2px solid #dee7f2;
+            padding-bottom: 6px;
+        }
+        .header .version {
+            color: #7a8ea8;
+            font-size: 14px;
+            background: #f0f5fc;
+            padding: 6px 14px;
+            border-radius: 40px;
+            border: 1px solid #dee7f2;
+        }
+
+        /* game chips */
+        .game-section {
+            margin-bottom: 20px;
+        }
+        .game-label {
+            font-weight: 500;
+            font-size: 14px;
+            color: #5b7088;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .chip-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip {
+            background: #f2f7ff;
+            border: 1px solid #dbe3ef;
+            color: #364c64;
+            padding: 8px 22px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: default;
+            transition: all 0.2s;
+        }
+        .chip.active {
+            background: #1a2634;
+            border-color: #1a2634;
+            color: #ffffff;
+        }
+        .chip.coming {
+            background: #f5faff;
+            color: #8d9fb8;
+            border-color: #d5e1ef;
+            font-size: 13px;
+        }
+        .chip.coming::after {
+            content: "· soon";
+            font-size: 11px;
+            margin-left: 4px;
+            color: #a1b4cf;
+        }
+
+        /* info panel modern */
+        .stats-grid {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            flex: 1;
+            background: #f8fbff;
+            border-radius: 24px;
+            padding: 16px 12px;
+            border: 1px solid #deeaf6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+        }
+        .stat-icon {
+            font-size: 24px;
+            color: #1a2634;
+            margin-bottom: 8px;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: #5f748f;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a2634;
+            background: #ffffff;
+            padding: 4px 16px;
+            border-radius: 40px;
+            border: 1px solid #d0dff0;
+            width: fit-content;
+        }
+        .stat-value.cooldown-active {
+            background: #fff3e0;
+            color: #b85e0e;
+            border-color: #ffc107;
+        }
+
+        /* konten utama dengan relative positioning untuk overlay */
+        .content-card {
+            background: #fbfdff;
+            border-radius: 28px;
+            padding: 24px 20px;
+            border: 1px solid #e6eef9;
+            margin-bottom: 28px;
+            animation: fadeSlide 0.3s ease;
+            position: relative;
+        }
+
+        /* overlay blur saat cooldown */
+        .cooldown-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(4px);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            animation: fadeIn 0.3s ease;
+        }
+        .cooldown-message {
+            background: white;
+            padding: 24px 28px;
+            border-radius: 60px;
+            box-shadow: 0 20px 40px -8px rgba(0,0,0,0.2);
+            border-left: 8px solid #f39c12;
+            text-align: center;
+        }
+        .cooldown-message i {
+            font-size: 48px;
+            color: #f39c12;
+            margin-bottom: 12px;
+        }
+        .cooldown-message p {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a2634;
+        }
+        .cooldown-message .timer-big {
+            font-size: 32px;
+            font-weight: 700;
+            color: #e67e22;
+            margin-top: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* form elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: 500;
+            font-size: 14px;
+            color: #40556d;
+            margin-bottom: 8px;
+        }
+        select, textarea, input[type="text"] {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #dbe3ef;
+            border-radius: 18px;
+            padding: 14px 18px;
+            color: #1a2634;
+            font-size: 15px;
+            outline: none;
+            font-family: inherit;
+            transition: border 0.2s;
+        }
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%235b7088" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 14px;
+        }
+        select:focus, textarea:focus, input:focus {
+            border-color: #1a2634;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* lane group */
+        .lane-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .lane-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f2f7ff;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid #dbe3ef;
+            font-size: 14px;
+            color: #2e4059;
+        }
+        .lane-option input[type="radio"] {
+            accent-color: #1a2634;
+            width: 14px;
+            height: 14px;
+        }
+
+        /* file */
+        .file-area {
+            background: #f6faff;
+            border-radius: 22px;
+            padding: 18px;
+            border: 1px dashed #c8d6e9;
+        }
+        .file-header {
+            display: flex;
+            justify-content: space-between;
+            color: #58708c;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .file-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .file-btn {
+            background: #ffffff;
+            border: 1px solid #c8d6e9;
+            color: #1a2634;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .file-btn:hover {
+            background: #eef4fd;
+        }
+        .file-name {
+            color: #40556d;
+            background: #eef4fd;
+            padding: 8px 18px;
+            border-radius: 40px;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        .preview-box {
+            margin-top: 16px;
+            background: #eef4fd;
+            border-radius: 18px;
+            padding: 8px;
+            display: flex;
+            justify-content: center;
+            max-height: 140px;
+            animation: zoom 0.2s ease;
+        }
+        @keyframes zoom {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .preview-box img, .preview-box video {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 14px;
+            border: 2px solid #d0deef;
+        }
+        .file-error {
+            color: #bf5b5b;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        /* tombol kirim */
+        .btn-primary {
+            background: #1a2634;
+            border: none;
+            width: 100%;
+            padding: 18px 10px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 18px;
+            color: #ffffff;
+            cursor: pointer;
+            border: 1px solid #1a2634;
+            margin-top: 24px;
+            transition: opacity 0.2s;
+            position: relative;
+        }
+        .btn-primary:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-primary.loading::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            top: 50%;
+            left: 50%;
+            margin-left: -12px;
+            margin-top: -12px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* peraturan */
+        .rules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .rules-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .rules-list::-webkit-scrollbar-track {
+            background: #eef4fd;
+        }
+        .rules-list::-webkit-scrollbar-thumb {
+            background: #b8cbdf;
+            border-radius: 10px;
+        }
+        .rule-item {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 14px 18px;
+            color: #1a2634;
+            font-size: 14px;
+            line-height: 1.5;
+            border-left: 5px solid #e1eaf4;
+        }
+
+        /* laporan */
+        .laporan-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .btn-lapor {
+            background: #eef4fd;
+            border: 1px solid #d0deef;
+            color: #1a2634;
+            padding: 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* tab bar */
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            border-top: 1px solid #e9eff6;
+            padding-top: 20px;
+        }
+        .tab {
+            background: transparent;
+            border: none;
+            padding: 8px 20px;
+            font-weight: 500;
+            font-size: 15px;
+            color: #7a8ea8;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab:hover {
+            color: #1a2634;
+        }
+        .tab.active {
+            color: #1a2634;
+            border-bottom: 2px solid #1a2634;
+        }
+
+        /* copyright */
+        .copyright {
+            text-align: center;
+            margin-top: 22px;
+            color: #9aadc6;
+            font-size: 13px;
         }
 
         /* popup tengah */
@@ -84,10 +508,14 @@
             color: #e74c3c;
         }
 
+        .popup-card .warning-icon {
+            color: #f39c12;
+        }
+
         .popup-card p {
             font-size: 16px;
             font-weight: 500;
-            color: #1e2b3a;
+            color: #1a2634;
             line-height: 1.5;
         }
 
@@ -98,345 +526,13 @@
         @keyframes fadeOut {
             to { opacity: 0; transform: scale(0.9); }
         }
-
-        /* header */
-        .header {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            margin-bottom: 32px;
-        }
-        .header h1 {
-            font-size: 28px;
-            font-weight: 600;
-            color: #1e2b3a;
-            letter-spacing: -0.5px;
-            border-bottom: 2px solid #dee7f2;
-            padding-bottom: 6px;
-        }
-        .header .version {
-            color: #7a8ea8;
-            font-size: 14px;
-            background: #f0f5fc;
-            padding: 6px 14px;
-            border-radius: 40px;
-            border: 1px solid #dee7f2;
-        }
-
-        /* game chips */
-        .game-section {
-            margin-bottom: 28px;
-        }
-        .game-label {
-            font-weight: 500;
-            font-size: 14px;
-            color: #5b7088;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        .chip-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .chip {
-            background: #f2f7ff;
-            border: 1px solid #dbe3ef;
-            color: #364c64;
-            padding: 8px 22px;
-            border-radius: 40px;
-            font-weight: 500;
-            font-size: 14px;
-            cursor: default;
-            transition: all 0.2s;
-        }
-        .chip.active {
-            background: #1e2b3a;
-            border-color: #1e2b3a;
-            color: #ffffff;
-        }
-        .chip.coming {
-            background: #f5faff;
-            color: #8d9fb8;
-            border-color: #d5e1ef;
-            font-size: 13px;
-        }
-        .chip.coming::after {
-            content: "· soon";
-            font-size: 11px;
-            margin-left: 4px;
-            color: #a1b4cf;
-        }
-
-        /* konten utama */
-        .content-card {
-            background: #fbfdff;
-            border-radius: 28px;
-            padding: 24px 20px;
-            border: 1px solid #e6eef9;
-            margin-bottom: 28px;
-            animation: fadeSlide 0.3s ease;
-        }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* form elements */
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-label {
-            font-weight: 500;
-            font-size: 14px;
-            color: #40556d;
-            margin-bottom: 8px;
-        }
-        select, textarea, input[type="text"] {
-            width: 100%;
-            background: #ffffff;
-            border: 1px solid #dbe3ef;
-            border-radius: 18px;
-            padding: 14px 18px;
-            color: #1e2b3a;
-            font-size: 15px;
-            outline: none;
-            font-family: inherit;
-            transition: border 0.2s;
-        }
-        select {
-            appearance: none;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%235b7088" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
-            background-repeat: no-repeat;
-            background-position: right 18px center;
-            background-size: 14px;
-        }
-        select:focus, textarea:focus, input:focus {
-            border-color: #1e2b3a;
-        }
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        /* lane group */
-        .lane-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .lane-option {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #f2f7ff;
-            padding: 8px 18px;
-            border-radius: 40px;
-            border: 1px solid #dbe3ef;
-            font-size: 14px;
-            color: #2e4059;
-        }
-        .lane-option input[type="radio"] {
-            accent-color: #1e2b3a;
-            width: 14px;
-            height: 14px;
-        }
-
-        /* file */
-        .file-area {
-            background: #f6faff;
-            border-radius: 22px;
-            padding: 18px;
-            border: 1px dashed #c8d6e9;
-        }
-        .file-header {
-            display: flex;
-            justify-content: space-between;
-            color: #58708c;
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-        .file-actions {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-        .file-btn {
-            background: #ffffff;
-            border: 1px solid #c8d6e9;
-            color: #1e2b3a;
-            padding: 10px 24px;
-            border-radius: 40px;
-            font-weight: 500;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .file-btn:hover {
-            background: #eef4fd;
-        }
-        .file-name {
-            color: #40556d;
-            background: #eef4fd;
-            padding: 8px 18px;
-            border-radius: 40px;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            font-size: 14px;
-        }
-        .preview-box {
-            margin-top: 16px;
-            background: #eef4fd;
-            border-radius: 18px;
-            padding: 8px;
-            display: flex;
-            justify-content: center;
-            max-height: 140px;
-            animation: zoom 0.2s ease;
-        }
-        @keyframes zoom {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .preview-box img, .preview-box video {
-            max-width: 100%;
-            max-height: 120px;
-            border-radius: 14px;
-            border: 2px solid #d0deef;
-        }
-        .file-error {
-            color: #bf5b5b;
-            font-size: 13px;
-            margin-top: 10px;
-        }
-
-        /* tombol kirim */
-        .btn-primary {
-            background: #1e2b3a;
-            border: none;
-            width: 100%;
-            padding: 18px 10px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 18px;
-            color: #ffffff;
-            cursor: pointer;
-            border: 1px solid #1e2b3a;
-            margin-top: 24px;
-            transition: opacity 0.2s;
-            position: relative;
-        }
-        .btn-primary:hover {
-            opacity: 0.9;
-        }
-        .btn-primary.loading::after {
-            content: '';
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            top: 50%;
-            left: 50%;
-            margin-left: -12px;
-            margin-top: -12px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 1s infinite linear;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* peraturan */
-        .rules-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 360px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-        .rules-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .rules-list::-webkit-scrollbar-track {
-            background: #eef4fd;
-        }
-        .rules-list::-webkit-scrollbar-thumb {
-            background: #b8cbdf;
-            border-radius: 10px;
-        }
-        .rule-item {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 14px 18px;
-            color: #1e2b3a;
-            font-size: 14px;
-            line-height: 1.5;
-            border-left: 5px solid #e1eaf4;
-        }
-
-        /* laporan */
-        .laporan-form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .btn-lapor {
-            background: #eef4fd;
-            border: 1px solid #d0deef;
-            color: #1e2b3a;
-            padding: 16px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        /* tab bar */
-        .tab-bar {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            border-top: 1px solid #e9eff6;
-            padding-top: 20px;
-        }
-        .tab {
-            background: transparent;
-            border: none;
-            padding: 8px 20px;
-            font-weight: 500;
-            font-size: 15px;
-            color: #7a8ea8;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .tab:hover {
-            color: #1e2b3a;
-        }
-        .tab.active {
-            color: #1e2b3a;
-            border-bottom: 2px solid #1e2b3a;
-        }
-
-        /* copyright */
-        .copyright {
-            text-align: center;
-            margin-top: 22px;
-            color: #9aadc6;
-            font-size: 13px;
-        }
     </style>
 </head>
 <body>
     <div class="phone">
         <div class="header">
             <h1>GameFess</h1>
-            <span class="version">v15.0</span>
+            <span class="version">v18.0</span>
         </div>
 
         <!-- game chips -->
@@ -475,10 +571,123 @@
             const gameChips = document.querySelectorAll('.chip:not(.coming)');
 
             let activeGame = 'ML';
+            let cooldownInterval = null;
+
+            // --- LocalStorage untuk quota (5x/hari) dan cooldown (5 menit) ---
+            const QUOTA_KEY = 'menfessQuota';
+            const COOLDOWN_KEY = 'lastSubmitTime';
+
+            function getTodayQuota() {
+                const today = new Date().toLocaleDateString('en-CA');
+                const stored = localStorage.getItem(QUOTA_KEY);
+                if (!stored) return { date: today, count: 0 };
+                try {
+                    const data = JSON.parse(stored);
+                    return (data.date === today) ? data : { date: today, count: 0 };
+                } catch {
+                    return { date: today, count: 0 };
+                }
+            }
+
+            function getRemainingQuota() {
+                const data = getTodayQuota();
+                return Math.max(0, 5 - data.count);
+            }
+
+            function incrementQuota() {
+                const data = getTodayQuota();
+                if (data.count < 5) {
+                    data.count += 1;
+                    localStorage.setItem(QUOTA_KEY, JSON.stringify({ date: data.date, count: data.count }));
+                }
+                return data.count;
+            }
+
+            // Cooldown 5 menit = 300.000 ms
+            function getCooldownRemaining() {
+                const last = localStorage.getItem(COOLDOWN_KEY);
+                if (!last) return 0;
+                const elapsed = Date.now() - parseInt(last, 10);
+                const remaining = 300000 - elapsed;
+                return remaining > 0 ? remaining : 0;
+            }
+
+            function setLastSubmitTime() {
+                localStorage.setItem(COOLDOWN_KEY, Date.now().toString());
+            }
+
+            // Update tampilan stats & overlay
+            function updateStatsAndOverlay() {
+                const quota = getRemainingQuota();
+                const cooldown = getCooldownRemaining();
+
+                // Update stat cards
+                const quotaValue = document.getElementById('quotaValue');
+                if (quotaValue) quotaValue.innerText = quota + '/5';
+
+                const cooldownValue = document.getElementById('cooldownValue');
+                if (cooldownValue) {
+                    if (cooldown > 0) {
+                        const minutes = Math.floor(cooldown / 60000);
+                        const seconds = Math.floor((cooldown % 60000) / 1000);
+                        cooldownValue.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                        cooldownValue.classList.add('cooldown-active');
+                    } else {
+                        cooldownValue.innerText = '0:00';
+                        cooldownValue.classList.remove('cooldown-active');
+                    }
+                }
+
+                // Update overlay blur
+                const overlay = document.getElementById('cooldownOverlay');
+                const submitBtn = document.getElementById('submitBtn');
+                
+                if (cooldown > 0) {
+                    if (!overlay) {
+                        const newOverlay = document.createElement('div');
+                        newOverlay.id = 'cooldownOverlay';
+                        newOverlay.className = 'cooldown-overlay';
+                        const minutes = Math.floor(cooldown / 60000);
+                        const seconds = Math.floor((cooldown % 60000) / 1000);
+                        newOverlay.innerHTML = `
+                            <div class="cooldown-message">
+                                <i class="fas fa-hourglass-half"></i>
+                                <p>Tunggu <span class="timer-big">${minutes}:${seconds.toString().padStart(2, '0')}</span> lagi<br>untuk mengirim pesan</p>
+                            </div>
+                        `;
+                        document.querySelector('.content-card').appendChild(newOverlay);
+                    } else {
+                        const minutes = Math.floor(cooldown / 60000);
+                        const seconds = Math.floor((cooldown % 60000) / 1000);
+                        overlay.innerHTML = `
+                            <div class="cooldown-message">
+                                <i class="fas fa-hourglass-half"></i>
+                                <p>Tunggu <span class="timer-big">${minutes}:${seconds.toString().padStart(2, '0')}</span> lagi<br>untuk mengirim pesan</p>
+                            </div>
+                        `;
+                    }
+                    if (submitBtn) submitBtn.disabled = true;
+                } else {
+                    if (overlay) overlay.remove();
+                    if (submitBtn) submitBtn.disabled = (quota === 0);
+                }
+
+                // Update tombol submit berdasarkan quota
+                if (submitBtn) {
+                    submitBtn.disabled = (quota === 0 || cooldown > 0);
+                }
+            }
+
+            // Jalankan update setiap detik
+            function startCooldownTimer() {
+                if (cooldownInterval) clearInterval(cooldownInterval);
+                cooldownInterval = setInterval(() => {
+                    if (document.getElementById('quotaValue')) updateStatsAndOverlay();
+                }, 1000);
+            }
 
             // --- fungsi popup tengah dengan Font Awesome ---
             function showPopup(message, type = 'success') {
-                // hapus popup sebelumnya jika ada
                 const existing = document.querySelector('.popup-overlay');
                 if (existing) existing.remove();
 
@@ -489,7 +698,9 @@
                 card.className = 'popup-card';
 
                 const icon = document.createElement('i');
-                icon.className = type === 'success' ? 'fas fa-check-circle success-icon' : 'fas fa-exclamation-circle error-icon';
+                if (type === 'success') icon.className = 'fas fa-check-circle success-icon';
+                else if (type === 'error') icon.className = 'fas fa-exclamation-circle error-icon';
+                else icon.className = 'fas fa-exclamation-triangle warning-icon';
 
                 const text = document.createElement('p');
                 text.innerText = message;
@@ -499,7 +710,6 @@
                 overlay.appendChild(card);
                 document.body.appendChild(overlay);
 
-                // hilang setelah 5 detik
                 setTimeout(() => {
                     card.classList.add('fade-out');
                     setTimeout(() => {
@@ -604,8 +814,345 @@
             // --- render tab ---
             function renderTab(tabId) {
                 if (tabId === 'kirim') {
+                    const remaining = getRemainingQuota();
+                    const cooldown = getCooldownRemaining();
                     gameSection.style.display = 'block';
                     contentDiv.innerHTML = `
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <i class="fas fa-envelope stat-icon"></i>
+                                <div class="stat-label">Sisa Hari Ini</div>
+                                <div class="stat-value" id="quotaValue">${remaining}/5</div>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-hourglass-half stat-icon"></i>
+                                <div class="stat-label">Cooldown</div>
+                                <div class="stat-value ${cooldown > 0 ? 'cooldown-active' : ''}" id="cooldownValue">
+                                    ${cooldown > 0 ? Math.floor(cooldown/60000)+':'+Math.floor((cooldown%60000)/1000).toString().padStart(2,'0') : '0:00'}
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="form-label">Jenis Menfess</div>
-                            <sel
+                            <select id="jenisMenfess">
+                                <option value="">Pilih jenis</option>
+                                <option value="friendsfess">1. Friendsfess (cari teman)</option>
+                                <option value="mabarfess">2. Mabarfess (ajak mabar)</option>
+                                <option value="squadfess">3. Squadfess (tim tetap)</option>
+                                <option value="helpfess">4. Helpfess (bantuan)</option>
+                                <option value="infofess">5. Infofess (info game)</option>
+                            </select>
+                            <div style="font-size:13px; color:#6f819b; margin-top:6px;" id="descJenis"></div>
+                        </div>
+
+                        <div class="form-group" id="groupIsi">
+                            <div class="form-label">Isi Menfess</div>
+                            <textarea id="isiMenfess" placeholder="Tulis pesanmu..."></textarea>
+                        </div>
+
+                        <div class="form-group" id="groupUsername" style="display: none;">
+                            <div class="form-label">ID Game / Username</div>
+                            <input type="text" id="usernameGame" placeholder="Contoh: 12345678 (opsional)">
+                        </div>
+
+                        <div class="form-group" id="groupLane" style="display: none;">
+                            <div class="form-label">Jenis Lane (khusus ML)</div>
+                            <div class="lane-group">
+                                <label class="lane-option"><input type="radio" name="lane" value="exp"> EXP</label>
+                                <label class="lane-option"><input type="radio" name="lane" value="jungle"> Jungle</label>
+                                <label class="lane-option"><input type="radio" name="lane" value="mid"> Mid</label>
+                                <label class="lane-option"><input type="radio" name="lane" value="gold"> Gold</label>
+                                <label class="lane-option"><input type="radio" name="lane" value="roam"> Roam</label>
+                            </div>
+                        </div>
+
+                        <div class="file-area">
+                            <div class="file-header">
+                                <span>Lampiran (opsional)</span>
+                                <span>Max 5MB · Video ≤120dtk</span>
+                            </div>
+                            <div class="file-actions">
+                                <button class="file-btn" id="fakeFileBtn">Pilih file</button>
+                                <span class="file-name" id="fileNameDisplay">Tidak ada file</span>
+                                <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.mp4" hidden>
+                            </div>
+                            <div class="preview-box" id="previewContainer" style="display: none;"></div>
+                            <div class="file-error" id="fileError"></div>
+                        </div>
+
+                        <button class="btn-primary" id="submitBtn" ${remaining === 0 || cooldown > 0 ? 'disabled' : ''}>Kirim</button>
+                        <div id="messageArea"></div>
+                    `;
+
+                    // Tambahkan overlay jika cooldown aktif
+                    if (cooldown > 0) {
+                        const overlay = document.createElement('div');
+                        overlay.id = 'cooldownOverlay';
+                        overlay.className = 'cooldown-overlay';
+                        const minutes = Math.floor(cooldown / 60000);
+                        const seconds = Math.floor((cooldown % 60000) / 1000);
+                        overlay.innerHTML = `
+                            <div class="cooldown-message">
+                                <i class="fas fa-hourglass-half"></i>
+                                <p>Tunggu <span class="timer-big">${minutes}:${seconds.toString().padStart(2, '0')}</span> lagi<br>untuk mengirim pesan</p>
+                            </div>
+                        `;
+                        document.querySelector('.content-card').appendChild(overlay);
+                    }
+
+                    const descMap = {
+                        friendsfess: '✨ Cari teman main atau ngobrol soal game',
+                        mabarfess: '🎮 Ajak mabar langsung',
+                        squadfess: '🏆 Cari tim tetap push rank',
+                        helpfess: '🆘 Butuh bantuan misi/event',
+                        infofess: '📢 Info update, tips, tanya jawab'
+                    };
+                    const select = document.getElementById('jenisMenfess');
+                    const descEl = document.getElementById('descJenis');
+                    select.addEventListener('change', () => {
+                        descEl.innerText = descMap[select.value] || '';
+                        updateVisibility(select.value);
+                    });
+
+                    function updateVisibility(jenis) {
+                        const showUser = ['friendsfess', 'mabarfess', 'squadfess'].includes(jenis);
+                        document.getElementById('groupUsername').style.display = showUser ? 'block' : 'none';
+                        const showLane = (activeGame === 'ML') && ['friendsfess', 'mabarfess', 'squadfess'].includes(jenis);
+                        document.getElementById('groupLane').style.display = showLane ? 'block' : 'none';
+                    }
+
+                    attachKirimHandlers();
+                } else {
+                    gameSection.style.display = 'none';
+                    if (tabId === 'peraturan') {
+                        contentDiv.innerHTML = `
+                            <div class="rules-list">
+                                <div class="rule-item"><strong>1.</strong> Dilarang pornografi, SARA, rasisme, politik, provokasi.</div>
+                                <div class="rule-item"><strong>2.</strong> Dilarang spam atau flood.</div>
+                                <div class="rule-item"><strong>3.</strong> Dilarang jual beli akun / item ilegal / scam.</div>
+                                <div class="rule-item"><strong>4.</strong> Dilarang phising atau menipu.</div>
+                                <div class="rule-item"><strong>5.</strong> Dilarang link mencurigakan.</div>
+                                <div class="rule-item"><strong>6.</strong> Dilarang menyebar data pribadi orang lain.</div>
+                                <div class="rule-item"><strong>7.</strong> Dilarang promosi tanpa izin admin.</div>
+                                <div class="rule-item"><strong>8.</strong> Dilarang toxic atau memancing keributan.</div>
+                                <div class="rule-item"><strong>9.</strong> Dilarang test / satu kata (test, ping).</div>
+                                <div class="rule-item"><strong>10.</strong> Dilarang di luar topik game.</div>
+                                <div class="rule-item"><strong>11.</strong> Dilarang cheat/hack/merusak game.</div>
+                                <div class="rule-item"><strong>12.</strong> Dilarang pesan tidak jelas.</div>
+                            </div>
+                        `;
+                    } else if (tabId === 'laporan') {
+                        contentDiv.innerHTML = `
+                            <div class="laporan-form">
+                                <input type="text" id="laporNama" placeholder="Nama (opsional)" />
+                                <textarea id="laporIsi" placeholder="Tulis laporan atau masukan..." rows="4"></textarea>
+                                <button class="btn-lapor" id="kirimLapor">Kirim Laporan</button>
+                                <div id="laporMessage"></div>
+                            </div>
+                        `;
+                        document.getElementById('kirimLapor')?.addEventListener('click', async function() {
+                            const isi = document.getElementById('laporIsi')?.value.trim();
+                            const nama = document.getElementById('laporNama')?.value.trim() || 'Anonim';
+                            if (!isi) {
+                                showPopup('Laporan tidak boleh kosong', 'error');
+                                return;
+                            }
+                            const now = new Date();
+                            const waktu = now.toLocaleDateString('id-ID') + ' ' + now.toTimeString().split(' ')[0];
+                            const teks = `<b>[LAPORAN]</b>\nDari: ${nama}\nIsi: ${isi}\nWaktu: ${waktu}`;
+                            const ok = await sendTelegramText(teks);
+                            if (ok) {
+                                showPopup('Laporan terkirim', 'success');
+                                document.getElementById('laporIsi').value = '';
+                                document.getElementById('laporNama').value = '';
+                            } else {
+                                showPopup('Error, mohon buat laporan ke admin', 'error');
+                            }
+                        });
+                    }
+                }
+            }
+
+            function attachKirimHandlers() {
+                const fileInput = document.getElementById('fileInput');
+                const fakeBtn = document.getElementById('fakeFileBtn');
+                const fileName = document.getElementById('fileNameDisplay');
+                const preview = document.getElementById('previewContainer');
+                const fileError = document.getElementById('fileError');
+                const submitBtn = document.getElementById('submitBtn');
+                const messageArea = document.getElementById('messageArea');
+                const jenisSelect = document.getElementById('jenisMenfess');
+                const isiMenfess = document.getElementById('isiMenfess');
+                const usernameInput = document.getElementById('usernameGame');
+
+                let currentFile = null;
+                let fileType = null;
+
+                fakeBtn?.addEventListener('click', () => fileInput.click());
+                fileInput?.addEventListener('change', async function(e) {
+                    const file = e.target.files[0];
+                    fileError.innerText = '';
+                    preview.style.display = 'none';
+                    preview.innerHTML = '';
+                    if (!file) {
+                        fileName.innerText = 'Tidak ada file';
+                        currentFile = null;
+                        return;
+                    }
+                    fileName.innerText = file.name.length > 25 ? file.name.slice(0,22)+'...' : file.name;
+                    const validation = await validateFile(file);
+                    if (!validation.valid) {
+                        fileError.innerText = validation.error;
+                        fileInput.value = '';
+                        fileName.innerText = 'Tidak ada file';
+                        currentFile = null;
+                        return;
+                    }
+                    currentFile = file;
+                    fileType = validation.isVideo ? 'video' : 'image';
+                    preview.style.display = 'flex';
+                    if (validation.isVideo) {
+                        const vid = document.createElement('video');
+                        vid.src = URL.createObjectURL(file);
+                        vid.controls = true;
+                        preview.appendChild(vid);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        preview.appendChild(img);
+                    }
+                });
+
+                submitBtn?.addEventListener('click', async function() {
+                    messageArea.innerHTML = '';
+
+                    // Cek quota
+                    const remaining = getRemainingQuota();
+                    if (remaining === 0) {
+                        showPopup('Batas kirim 5x sehari telah habis. Silakan coba besok.', 'warning');
+                        return;
+                    }
+
+                    // Cek cooldown
+                    const cooldown = getCooldownRemaining();
+                    if (cooldown > 0) {
+                        showPopup('Anda masih dalam masa cooldown 5 menit.', 'warning');
+                        return;
+                    }
+
+                    const jenis = jenisSelect.value;
+                    if (!jenis) {
+                        showPopup('Pilih jenis menfess', 'error');
+                        return;
+                    }
+
+                    const teks = isiMenfess.value.trim();
+                    const textErr = validateText(teks);
+                    if (textErr) {
+                        showPopup(textErr, 'error');
+                        return;
+                    }
+
+                    if (currentFile) {
+                        const fileValid = await validateFile(currentFile);
+                        if (!fileValid.valid) {
+                            showPopup(fileValid.error, 'error');
+                            return;
+                        }
+                    }
+
+                    submitBtn.classList.add('loading');
+                    submitBtn.disabled = true;
+
+                    const username = usernameInput?.value.trim() || '-';
+                    const laneRadios = document.querySelectorAll('input[name="lane"]');
+                    let lane = '';
+                    for (let r of laneRadios) if (r.checked) lane = r.value;
+
+                    const now = new Date();
+                    const waktu = now.toLocaleDateString('id-ID') + ' ' + now.toTimeString().split(' ')[0];
+                    const game = activeGame;
+
+                    let caption = `<b>🎮 [${game}] ${jenis.toUpperCase()}</b>\n\n${teks}\n`;
+                    if (username && username !== '-') caption += `\n🆔 ID: ${username}`;
+                    if (lane) caption += `\n📍 Lane: ${lane.toUpperCase()}`;
+                    caption += `\n\n🕒 ${waktu}`;
+
+                    let ok;
+                    if (currentFile) {
+                        ok = await sendTelegramMedia(currentFile, caption, fileType === 'video');
+                    } else {
+                        ok = await sendTelegramText(caption);
+                    }
+
+                    submitBtn.classList.remove('loading');
+
+                    if (!ok) {
+                        showPopup('Error, mohon buat laporan ke admin', 'error');
+                        submitBtn.disabled = false;
+                        return;
+                    }
+
+                    // Increment quota dan set cooldown
+                    incrementQuota();
+                    setLastSubmitTime();
+
+                    // Update tampilan
+                    updateStatsAndOverlay();
+
+                    showPopup('✅ Menfess terkirim, mohon tunggu 1-10 menit untuk peninjauan', 'success');
+
+                    // Reset form
+                    isiMenfess.value = '';
+                    if (usernameInput) usernameInput.value = '';
+                    laneRadios.forEach(r => r.checked = false);
+                    if (fileInput) {
+                        fileInput.value = '';
+                        currentFile = null;
+                        fileName.innerText = 'Tidak ada file';
+                        preview.style.display = 'none';
+                        preview.innerHTML = '';
+                    }
+                });
+            }
+
+            // Tab switching
+            function setActiveTab(tabId) {
+                tabButtons.forEach(btn => {
+                    if (btn.dataset.tab === tabId) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                });
+                renderTab(tabId);
+                if (tabId === 'kirim') {
+                    startCooldownTimer();
+                    updateStatsAndOverlay();
+                } else {
+                    if (cooldownInterval) clearInterval(cooldownInterval);
+                }
+            }
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
+            });
+
+            setActiveTab('kirim');
+
+            // Game chips
+            gameChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    gameChips.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    activeGame = this.innerText.trim();
+                    if (document.querySelector('.tab.active')?.dataset.tab === 'kirim') {
+                        const jenis = document.getElementById('jenisMenfess')?.value;
+                        const showLane = (activeGame === 'ML') && ['friendsfess','mabarfess','squadfess'].includes(jenis);
+                        const laneDiv = document.getElementById('groupLane');
+                        if (laneDiv) laneDiv.style.display = showLane ? 'block' : 'none';
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
