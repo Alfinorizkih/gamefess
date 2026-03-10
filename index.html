@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>GameFess · popup tengah</title>
+    <!-- Font Awesome 6 (gratis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f8fafd;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 24px 16px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #1e2b3a;
+        }
+
+        .phone {
+            max-width: 400px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 36px;
+            padding: 32px 24px 24px;
+            box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e9eff6;
+        }
+
+        /* popup tengah */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeOverlay 0.2s ease;
+        }
+
+        @keyframes fadeOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .popup-card {
+            background: white;
+            border-radius: 32px;
+            padding: 32px 28px;
+            max-width: 320px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px -8px rgba(0,0,0,0.3);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .popup-card i {
+            font-size: 56px;
+            margin-bottom: 16px;
+        }
+
+        .popup-card .success-icon {
+            color: #2ecc71;
+        }
+
+        .popup-card .error-icon {
+            color: #e74c3c;
+        }
+
+        .popup-card p {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1e2b3a;
+            line-height: 1.5;
+        }
+
+        .popup-card.fade-out {
+            animation: fadeOut 0.3s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: scale(0.9); }
+        }
+
+        /* header */
+        .header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1e2b3a;
+            letter-spacing: -0.5px;
+            border-bottom: 2px solid #dee7f2;
+            padding-bottom: 6px;
+        }
+        .header .version {
+            color: #7a8ea8;
+            font-size: 14px;
+            background: #f0f5fc;
+            padding: 6px 14px;
+            border-radius: 40px;
+            border: 1px solid #dee7f2;
+        }
+
+        /* game chips */
+        .game-section {
+            margin-bottom: 28px;
+        }
+        .game-label {
+            font-weight: 500;
+            font-size: 14px;
+            color: #5b7088;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .chip-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip {
+            background: #f2f7ff;
+            border: 1px solid #dbe3ef;
+            color: #364c64;
+            padding: 8px 22px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: default;
+            transition: all 0.2s;
+        }
+        .chip.active {
+            background: #1e2b3a;
+            border-color: #1e2b3a;
+            color: #ffffff;
+        }
+        .chip.coming {
+            background: #f5faff;
+            color: #8d9fb8;
+            border-color: #d5e1ef;
+            font-size: 13px;
+        }
+        .chip.coming::after {
+            content: "· soon";
+            font-size: 11px;
+            margin-left: 4px;
+            color: #a1b4cf;
+        }
+
+        /* konten utama */
+        .content-card {
+            background: #fbfdff;
+            border-radius: 28px;
+            padding: 24px 20px;
+            border: 1px solid #e6eef9;
+            margin-bottom: 28px;
+            animation: fadeSlide 0.3s ease;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* form elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: 500;
+            font-size: 14px;
+            color: #40556d;
+            margin-bottom: 8px;
+        }
+        select, textarea, input[type="text"] {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #dbe3ef;
+            border-radius: 18px;
+            padding: 14px 18px;
+            color: #1e2b3a;
+            font-size: 15px;
+            outline: none;
+            font-family: inherit;
+            transition: border 0.2s;
+        }
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%235b7088" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 14px;
+        }
+        select:focus, textarea:focus, input:focus {
+            border-color: #1e2b3a;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* lane group */
+        .lane-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .lane-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f2f7ff;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid #dbe3ef;
+            font-size: 14px;
+            color: #2e4059;
+        }
+        .lane-option input[type="radio"] {
+            accent-color: #1e2b3a;
+            width: 14px;
+            height: 14px;
+        }
+
+        /* file */
+        .file-area {
+            background: #f6faff;
+            border-radius: 22px;
+            padding: 18px;
+            border: 1px dashed #c8d6e9;
+        }
+        .file-header {
+            display: flex;
+            justify-content: space-between;
+            color: #58708c;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .file-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .file-btn {
+            background: #ffffff;
+            border: 1px solid #c8d6e9;
+            color: #1e2b3a;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .file-btn:hover {
+            background: #eef4fd;
+        }
+        .file-name {
+            color: #40556d;
+            background: #eef4fd;
+            padding: 8px 18px;
+            border-radius: 40px;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        .preview-box {
+            margin-top: 16px;
+            background: #eef4fd;
+            border-radius: 18px;
+            padding: 8px;
+            display: flex;
+            justify-content: center;
+            max-height: 140px;
+            animation: zoom 0.2s ease;
+        }
+        @keyframes zoom {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .preview-box img, .preview-box video {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 14px;
+            border: 2px solid #d0deef;
+        }
+        .file-error {
+            color: #bf5b5b;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        /* tombol kirim */
+        .btn-primary {
+            background: #1e2b3a;
+            border: none;
+            width: 100%;
+            padding: 18px 10px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 18px;
+            color: #ffffff;
+            cursor: pointer;
+            border: 1px solid #1e2b3a;
+            margin-top: 24px;
+            transition: opacity 0.2s;
+            position: relative;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        .btn-primary.loading::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            top: 50%;
+            left: 50%;
+            margin-left: -12px;
+            margin-top: -12px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* peraturan */
+        .rules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .rules-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .rules-list::-webkit-scrollbar-track {
+            background: #eef4fd;
+        }
+        .rules-list::-webkit-scrollbar-thumb {
+            background: #b8cbdf;
+            border-radius: 10px;
+        }
+        .rule-item {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 14px 18px;
+            color: #1e2b3a;
+            font-size: 14px;
+            line-height: 1.5;
+            border-left: 5px solid #e1eaf4;
+        }
+
+        /* laporan */
+        .laporan-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .btn-lapor {
+            background: #eef4fd;
+            border: 1px solid #d0deef;
+            color: #1e2b3a;
+            padding: 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* tab bar */
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            border-top: 1px solid #e9eff6;
+            padding-top: 20px;
+        }
+        .tab {
+            background: transparent;
+            border: none;
+            padding: 8px 20px;
+            font-weight: 500;
+            font-size: 15px;
+            color: #7a8ea8;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab:hover {
+            color: #1e2b3a;
+        }
+        .tab.active {
+            color: #1e2b3a;
+            border-bottom: 2px solid #1e2b3a;
+        }
+
+        /* copyright */
+        .copyright {
+            text-align: center;
+            margin-top: 22px;
+            color: #9aadc6;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <div class="header">
+            <h1>GameFess</h1>
+            <span class="version">v15.0</span>
+        </div>
+
+        <!-- game chips -->
+        <div class="game-section" id="gameSection">
+            <div class="game-label">Pilih Game</div>
+            <div class="chip-container">
+                <span class="chip active" id="game-ml">ML</span>
+                <span class="chip" id="game-ff">FF</span>
+                <span class="chip" id="game-pubg">PUBG</span>
+                <span class="chip" id="game-roblox">Roblox</span>
+                <span class="chip coming">lainnya soon</span>
+            </div>
+        </div>
+
+        <!-- konten dinamis -->
+        <div class="content-card" id="dynamicContent"></div>
+
+        <!-- tab bar -->
+        <div class="tab-bar" id="tabBar">
+            <button class="tab active" data-tab="kirim">Kirim</button>
+            <button class="tab" data-tab="peraturan">Peraturan</button>
+            <button class="tab" data-tab="laporan">Laporan</button>
+        </div>
+
+        <div class="copyright">© 2025 GameFess</div>
+    </div>
+
+    <script>
+        (function() {
+            const BOT_TOKEN = '8701674482:AAEj6jHgF6j24nUvWR0vveBLHZ3YB5oTk6c';
+            const CHANNEL_ID = '-1003794250089';
+
+            const contentDiv = document.getElementById('dynamicContent');
+            const tabButtons = document.querySelectorAll('.tab');
+            const gameSection = document.getElementById('gameSection');
+            const gameChips = document.querySelectorAll('.chip:not(.coming)');
+
+            let activeGame = 'ML';
+
+            // --- fungsi popup tengah dengan Font Awesome ---
+            function showPopup(message, type = 'success') {
+                // hapus popup sebelumnya jika ada
+                const existing = document.querySelector('.popup-overlay');
+                if (existing) existing.remove();
+
+                const overlay = document.createElement('div');
+                overlay.className = 'popup-overlay';
+
+                const card = document.createElement('div');
+                card.className = 'popup-card';
+
+                const icon = document.createElement('i');
+                icon.className = type === 'success' ? 'fas fa-check-circle success-icon' : 'fas fa-exclamation-circle error-icon';
+
+                const text = document.createElement('p');
+                text.innerText = message;
+
+                card.appendChild(icon);
+                card.appendChild(text);
+                overlay.appendChild(card);
+                document.body.appendChild(overlay);
+
+                // hilang setelah 5 detik
+                setTimeout(() => {
+                    card.classList.add('fade-out');
+                    setTimeout(() => {
+                        if (overlay.parentNode) overlay.remove();
+                    }, 300);
+                }, 5000);
+            }
+
+            // --- helper kirim ke Telegram ---
+            async function sendTelegramText(text) {
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                const payload = {
+                    chat_id: CHANNEL_ID,
+                    text: text,
+                    parse_mode: 'HTML'
+                };
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await response.json();
+                    return data.ok;
+                } catch (err) {
+                    console.error(err);
+                    return false;
+                }
+            }
+
+            async function sendTelegramMedia(file, caption, isVideo) {
+                const formData = new FormData();
+                formData.append('chat_id', CHANNEL_ID);
+                formData.append('caption', caption);
+                formData.append('parse_mode', 'HTML');
+                if (isVideo) formData.append('video', file);
+                else formData.append('photo', file);
+                const endpoint = isVideo ? 'sendVideo' : 'sendPhoto';
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/${endpoint}`;
+                try {
+                    const response = await fetch(url, { method: 'POST', body: formData });
+                    const data = await response.json();
+                    return data.ok;
+                } catch (err) {
+                    console.error(err);
+                    return false;
+                }
+            }
+
+            // --- validasi teks ---
+            function validateText(text) {
+                if (!text || text.trim().length === 0) return "Isi menfess tidak boleh kosong.";
+                const lower = text.toLowerCase();
+
+                if (/(ngentot|kontol|memek|pepek|pukimak|bangsat|jancok|pantek|tempik|peler)/i.test(lower))
+                    return "Mengandung kata kasar berat.";
+                if (/(pribumi|non-pribumi|china|tiong|babi|anjing|kampret)/i.test(lower) && !lower.includes('anjir') && !lower.includes('jir'))
+                    return "Hindari unsur SARA/rasis.";
+                if (/@\w+/.test(text)) return "Dilarang mention (@username).";
+                if (/#\w+/.test(text)) return "Dilarang menggunakan tagar (#).";
+
+                const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
+                if (urlRegex.test(text)) return "Dilarang mengirim link (URL) apapun.";
+
+                if (/(jual|beli|akun|scam|cheat|hack|ilegal|phising|tipu)/i.test(lower))
+                    return "Dilarang jual beli akun, scam, cheat, atau konten ilegal.";
+
+                const kata = lower.split(/\s+/).filter(w => w.length > 0);
+                if (kata.length === 1) {
+                    const satu = kata[0];
+                    if (['testing','test','coba','tes','ping','kekirim','gak','gabut','bosen','kangen'].includes(satu) || satu.length < 4)
+                        return "Dilarang menfess satu kata/percobaan (test, gabut, dll).";
+                }
+
+                return null;
+            }
+
+            // --- validasi file ---
+            function validateFile(file) {
+                return new Promise((resolve) => {
+                    if (!file) { resolve({ valid: true }); return; }
+                    const maxSize = 5 * 1024 * 1024;
+                    if (file.size > maxSize) { resolve({ valid: false, error: `File maksimal 5 MB.` }); return; }
+                    const type = file.type;
+                    const isImage = type.startsWith('image/') && (type === 'image/jpeg' || type === 'image/png');
+                    const isVideo = type === 'video/mp4';
+                    if (!isImage && !isVideo) { resolve({ valid: false, error: `Hanya JPG, PNG, MP4.` }); return; }
+                    if (isImage) { resolve({ valid: true, isVideo: false }); return; }
+                    const video = document.createElement('video');
+                    video.preload = 'metadata';
+                    const objUrl = URL.createObjectURL(file);
+                    video.src = objUrl;
+                    video.onloadedmetadata = () => {
+                        URL.revokeObjectURL(objUrl);
+                        if (video.duration > 120) resolve({ valid: false, error: `Durasi video maksimal 120 detik.` });
+                        else resolve({ valid: true, isVideo: true });
+                    };
+                    video.onerror = () => resolve({ valid: false, error: `File rusak.` });
+                });
+            }
+
+            // --- render tab ---
+            function renderTab(tabId) {
+                if (tabId === 'kirim') {
+                    gameSection.style.display = 'block';
+                    contentDiv.innerHTML = `
+                        <div class="form-group">
+                            <div class="form-label">Jenis Menfess</div>
+                            <sel
